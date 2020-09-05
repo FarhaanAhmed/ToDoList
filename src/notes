@@ -1,0 +1,204 @@
+--------------------------------------------
+TODO APP
+--------------------------------------------
+
+Create the state object in the App.js file, and add the todos property aray giving them an id and content
+
+Create the todos.js file to create a separate component to list the individual todo’s
+
+Todo’s is going to be a functional component since we don’t need the state as the state was registered in the app.js which we can pass down into this component
+
+Create the component, const Todos, and set it up as an arrow function
+
+We want to return a template so use return and create div tags
+
+Need to pass todo’s from the App.js component into the Todos.js component, this will be done via props
+
+Import the Todo’s file in the App.js, don’t forget to export in the Todos.js file
+
+Now we can nest it in the div we created in a h1 tag with any title, adding <Todos  /> to nest it
+
+We need to pass it props to use <Todos todos={this.state.todos} /> , referencing this for the component and then state and todos as we named them.
+
+Now we can access the Todos inside the Todo.js component.
+
+In the Todos.js file - using de-structuring, in the arrow function, create an object to represent the props, so add curly braces in the brackets of the arrow function and just type in todos as we are grabbing the todo’s of the prop object.
+
+Since were getting a list, we need to map through the list and return some jsx for each item in the list then output the list
+
+So above the return statement, create a variable and set it equal to the props we just named and check to see if it has a length so we can see if there are any todos, if not we can display a different message. So this will be a ternary operator to see if we have any todo’s. So if we do have something then it will run what in the first set of brackets, if not then the second set of brackets
+const todosList = todos.length ? () : ()
+
+Can just return null if there is nothing or input some JSX, so in a p tag type something like Finished Todo’s in the second set of brackets.
+
+If we do have todos we need to cycle through them. So in the first set of brackets we grab the props we named todos and use the map method grabbing each todo separately and set a function on that todo, directly in the map method. We need to use the return method and return some JSX for each so we create a div, then in the div output the todo, so in a span tag can add {todo.content}. Also need to output the id so add key={todo.id} in the div tags. Finally output the todoList in the return statement below. CAN IGNORE className ITS JUST FOR CSS PURPOSES.
+const todoList = todos.length ? (
+        todos.map(todo => {
+            return (
+                <div className="collection-item" key={todo.id}>
+                    <span>{todo.content}</span>
+                </div>
+            )
+        })
+    ) : (
+        <p className="center">You have no todo's left.</p>
+    )
+return (
+        <div className="todos collection">
+            {todoList}
+        </div>
+    )
+
+--------------------------------------------
+CREATING THE DELETE EVENT
+--------------------------------------------
+
+Delete function must be in App.js as it has to interact with the state.
+
+Create function deleteTodo as an arrow function giving the id as a parameter. Can just console log it now to not get errors.
+
+Need to pass this function as a prop to the <Todos  /> component, in the render, so that we can call it from the todo component when we click an individual Todo. So pass it as a prop and set it equal to the function this.deleteTodo.
+<Todos deleteTodo={this.deleteTodo} />
+
+Need to pass it in the Todo.js file by adding it to the object in the Todos variable to use it. ADDING IT, SO DON’T DELTE ANYTHING ELSE THAT MAY BE IN THER OBJECT, SHOULD HAVE todos IN THERE AS WELL NOT SHOWN IN EXAMPLE BELOW.
+const Todos = ({deleteTodo})
+
+Now need to add a click event to the span to each individual item when it output to delte it on click. So add the onClick handler and set an arrow function, with empty properties, equal to deleteTodo with the id passed in.
+<span onClick={() => {deleteTodo(todo.id)}}>{todo.content}</span>
+
+Now in the App.js file we add to the function deleteTodo as that’s what we are calling.
+
+We want to filter the todos so we store the new array in the variable called todos setting it equal to the todos in the state with a .filter at the end. Inside the filter method we pass an arrow function that takes the individual todo as a parameter and return either true or false if we want to keep the item in the array or not. So return todo.id !== id. We then set the state and the todos to be equal to the new array created, todos.
+deleteTodo = (id) => {
+    const todos = this.state.todos.filter(todo => {
+      return todo.id !== id
+    });
+    this.setState({
+      todos
+    })
+  }
+
+--------------------------------------------
+CREATING THE FORM TO ADD THE TODOS
+--------------------------------------------
+
+Now to create a component for the form so we create a new file in the src folder called AddTodo.js
+
+We need to create a local state in this component to store what the user inputs in the field so this should be a class based component.
+
+Import React, { Components } from “react“
+
+Create class AddTodo extending component
+
+Add render method and return a form, with a onSubmit event handler, in div tags
+
+Only need one inout field in the form
+
+So add a label with text add new todo.
+
+Create input field of type text with an onChange event handler
+
+import React, { Component } from "react";
+class AddTodo extends Component {
+    state = {
+    }
+    render(){
+        return (
+            <div>
+                <form onSubmit={}>
+                    <label>Add new todo:</label>
+                    <input type="text" onChange={ } />
+                </form>
+            </div>
+        )
+    }
+}
+
+--------------------------------------------
+CREATING THE HANDLER FUNCTIONS
+--------------------------------------------
+
+So create a function called handleChange, set it as an arrow function, that takes the event object as a parameter.
+
+We want to set the state so that the content in the input matches the content in the state 
+
+Create the content property in the state as an empty string.
+
+We want to update content property when change is detected so in the handleChange add
+this.setState({
+    content: e.target.value
+})
+
+Now the content in the state is kept in sync with whatever is input
+
+Need to reference the function handleChange in the onChange event handler in the label
+onChange={this.handleChange}
+
+Then we create a function for the onSubmit event handler also taking in the event object in its parameter referencing it in the onSubmit event handler as well.
+
+We want to prevent the default action of a form being submitted, which is a page refresh. So we add
+    e.preventDefault();
+
+To submit the todo to output it to the DOM we need to create a function in the App.js file. So for now we can just console log it to avoid errors.
+import React, { Component } from "react";
+class AddTodo extends Component {
+    state = {
+        content: ""
+    }
+    handleChange = (e) => {
+        this.setState({
+            content: e.target.value
+        })
+    }
+    handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(this.state)
+    }
+    render(){
+        return (
+            <div>
+                <form onSubmit={this.handleSubmit}>
+                    <label>Add new todo:</label>
+                    <input type="text" onChange={this.handleChange} />
+                </form>
+            </div>
+        )
+    }
+}
+
+We can now nest this component in the App.js so export it from here and import it in App.js.
+
+Then in the App.js file don’t forget to nest it under the <Todos  /> in the render.
+<AddTodo />
+
+
+Now we can create the function in the App.js file to add to the list, so we create a function called addTodo passing the todo as a parameter.
+
+We need to call this function from the form component in the AddTodo.js file
+
+To do this we pass it as a prop in the AddTodo nest. So add
+addTodo={this.addTodo}
+
+Now in the AddTodo.js instead of loggin it to the console, in the handleSubmit function, we pass this.props.addTodo to call that function and pass this.state in the function.
+        this.props.addTodo(this.state);
+
+Now we can receive the object we created, in the current file, in the addTodo function in the App.js file.
+
+We first need to generate a id to the new todo, using math.random, and create a new array called let todos making it equal to the old array using a spread operator adding on the new items.
+    let todos = [...this.state.todos, todo];
+
+Then we set the state  and update the todos to equal the new todos array we created.
+addTodo = (todo) => {
+    todo.id = Math.random();
+    let todos = [...this.state.todos, todo];
+    this.setState({
+      todos
+    })
+  }
+
+If we want to clear the input field after a user submits then in the AddTodo.js file in the handleSubmit function set the state to make the content equal to nothing.
+this.setState({
+            content: ""
+        })
+
+Then in the input field add   value={this.state.content}
